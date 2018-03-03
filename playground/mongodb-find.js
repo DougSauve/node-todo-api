@@ -13,7 +13,7 @@ MongoClient.connect('mongodb://localhost:27017/TodoApp', (err, client) => {
     const db = client.db('TodoApp');
 
     db.collection('Todos')
-    .find({completed: true})
+    .find()
     .toArray()
     .then((docs) => {
       console.log("Todos:");
