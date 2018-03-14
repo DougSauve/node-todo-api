@@ -7,17 +7,6 @@ const {User} = require('./models/user');
 
 const port = process.env.PORT || 4200;
 
-// const todo1 = new Todo({
-//   text: "eat bob",
-//   completed: true
-// })
-//
-// todo1.save().then((doc)=>{
-//   console.log(doc);
-// }, (e) => {
-//   console.log(e);
-// });
-
 const app = express();
 
 //enables us to send json to express
@@ -31,6 +20,15 @@ app.post('/todos', (req, res) => {
 
   todo.save().then((doc)=> {
     res.send(doc);
+  }, (e) => {
+    res.status(418).send(e);
+  });
+});
+
+//get -read
+app.get('/todos', (req, res) => {
+  Todo.find().then((todos) => {
+    res.send({todos});
   }, (e) => {
     res.status(418).send(e);
   });
