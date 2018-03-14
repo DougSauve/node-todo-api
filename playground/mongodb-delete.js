@@ -25,17 +25,17 @@ MongoClient.connect('mongodb://localhost:27017/TodoApp', (err, client) => {
     var getID = () => {
       return new Promise((resolve, reject) => {
 
-         db.collection('Users')
+         db.collection('Todos')
         .find()
         .toArray()
         .then((result) => {
-          resolve(result[2]._id);//new ObjectID(result[2]._id));
+          resolve(result[0]._id);//new ObjectID(result[2]._id));
         });
       });
     };
 
     getID().then((res) => {
-        db.collection('Users')
+        db.collection('Todos')
         .findOneAndDelete({_id: res}).then((result) => {
           console.log(result);
         })
