@@ -7,16 +7,16 @@ const {User} = require('./models/user');
 
 const port = process.env.PORT || 4200;
 
-const todo1 = new Todo({
-  text: "eat bob",
-  completed: true
-})
-
-todo1.save().then((doc)=>{
-  console.log(doc);
-}, (e) => {
-  console.log(e);
-});
+// const todo1 = new Todo({
+//   text: "eat bob",
+//   completed: true
+// })
+//
+// todo1.save().then((doc)=>{
+//   console.log(doc);
+// }, (e) => {
+//   console.log(e);
+// });
 
 const app = express();
 
@@ -41,3 +41,7 @@ app.post('/todos', (req, res) => {
 app.listen(port, () => {
   console.log(`App is up at ${port}.`);
 });
+
+module.exports = {
+  app
+};
