@@ -64,9 +64,6 @@ app.get('/todos/:id', (req,res) => {
     res.send({todo});
   })
   .catch((e) => res.status(400).send());
-
-//validate id => 404
-//findById ? return the id, or 404 if not there. : 400
 });
 
 
