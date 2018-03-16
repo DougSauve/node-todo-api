@@ -100,3 +100,27 @@ describe('GET /todos/:id', () => {
     .end(done);
   });
 });
+
+describe('DELETE /todos/:id', () => {
+  it('should return a 406 if provided an invalid Id', (done) => {
+    request(app)
+    .delete(`/todos/123`)
+    .expect(406)
+    .end(done);
+  });
+  it('should remove a todo when passed a correct Id', (done) => {
+    request(app)
+    .delete(`/todos/${todos[0]._id.toHexString()}`)
+    .expect(200)
+    .expect((res) => {
+      expect(res.body.todo.text).toBe(todos[0].text);
+    })
+    .end(done);
+  });
+  it('should return a 404 if provided a valid Id that is not there', (done) => {
+    request(app)
+    .delete(`/todos/5aabd9373ce94d0014a6c45d`)
+    .expect(404)
+    .end(done);
+  });
+})
