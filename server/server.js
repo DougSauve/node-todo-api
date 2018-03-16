@@ -66,6 +66,22 @@ app.get('/todos/:id', (req,res) => {
   .catch((e) => res.status(400).send());
 });
 
+//delete
+app.delete('/todos/:id', (req, res) => {
+  const id = req.params.id;
+
+  //validate the id - return 406 Unacceptable if it isn't valid
+  if (!ObjectID.isValid(id)) return res.status(406).send();
+  Todo.findByIdAndRemove(id).then((todo) => {
+    //if the document is valid but not there, return 404 not found
+    if (!todo) return res.status(404).send();
+    //found it, no issues
+    res.send('document removed', todo);
+    //if the request doesn't work for whatever reason
+  })
+  .catch((e) => res.status(400).send());
+});
+
 
 
 app.listen(port, () => {
