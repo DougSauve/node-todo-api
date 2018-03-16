@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const {ObjectID} = require('mongodb');
 
 const {mongoose} = require('./db/mongoose');
 const {Todo} = require('./models/todo');
@@ -48,6 +49,24 @@ app.get('/todos', (req, res) => {
   }, (e) => {
     res.status(418).send(e);
   });
+});
+
+
+//get - using params
+app.get('/todos/:id', (req,res) => {
+  const id = req.params.id;
+
+  //validate the id
+  if (!ObjectID.isValid(id)) return res.status(406).send();
+  Todo.findById(id).then((todo) => {
+    //return 404 if there is no matching todo: find doesn't complain about returning an empty array
+    if(!todo) return res.status(404).send();
+    res.send({todo});
+  })
+  .catch((e) => res.status(400).send());
+
+//validate id => 404
+//findById ? return the id, or 404 if not there. : 400
 });
 
 
