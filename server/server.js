@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const express = require('express');
 const bodyParser = require('body-parser');
 const {ObjectID} = require('mongodb');
@@ -82,6 +83,26 @@ app.delete('/todos/:id', (req, res) => {
   .catch((e) => res.status(400).send());
 });
 
+//patch -update
+app.patch('/todos/:id', (req, res) => {
+  const id = req.params.id;
+  const body = _.pick(req.body, ['text', 'completed']);
+
+  if (!ObjectID.isValid(id)) return res.status(406).send();
+
+  if (_.isBoolean(body.completed) && body.completed) {//why check if it's a boolean? Can the user access this and give it somethig weird? Then I guess if they do that we're just saying they didn't completed it, not send a 406...?
+    body.completedAt = new Date().getTime(); //# of milliseconds since 1970.
+  }
+  else {
+    body.completed = false;
+    body.completedAt = null;
+  }
+
+  Todo.findByIdAndUpdate(id, {$set: body}, {new: true}).then((todo) => {
+    if(!todo) return response.status(404).send();
+    res.send({todo});
+  }).catch((e) => res.status(404).send());
+});
 
 
 app.listen(port, () => {

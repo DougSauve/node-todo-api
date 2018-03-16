@@ -109,13 +109,21 @@ describe('DELETE /todos/:id', () => {
     .end(done);
   });
   it('should remove a todo when passed a correct Id', (done) => {
+    const hexId = todos[0]._id.toHexString();
     request(app)
-    .delete(`/todos/${todos[0]._id.toHexString()}`)
+    .delete(`/todos/${hexId}`)
     .expect(200)
     .expect((res) => {
       expect(res.body.todo.text).toBe(todos[0].text);
     })
-    .end(done);
+    .end((err, res) => {
+      if (err) return done(err);
+
+      Todo.findById(hexId).then((todo) => {
+        expect(todo).toNotExist();
+        done();
+      }).catch((e) => done(e));
+    });
   });
   it('should return a 404 if provided a valid Id that is not there', (done) => {
     request(app)
