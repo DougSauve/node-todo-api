@@ -1,0 +1,10 @@
+//configure app environment. 'production' is the default setting on heroku.
+const env = process.env.NODE_ENV || 'development';
+
+if (env === 'development'){
+  process.env.PORT = 4200;
+  process.env.MONGODB_URI = 'mongodb://localhost:27017/TodoApp';
+}else if (env === 'test'){
+  process.env.PORT = 4200;
+  process.env.MONGODB_URI = 'mongodb://localhost:27017/TodoAppTest';
+}
