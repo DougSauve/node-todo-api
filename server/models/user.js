@@ -39,6 +39,7 @@ UserSchema.methods.toJSON = function () {
 
   return _.pick(userObject, ['_id', 'email']);
 };
+//instance methods
 //using 'function' because we need 'this'
 UserSchema.methods.generateAuthToken = function () {
   const user = this;
@@ -49,6 +50,23 @@ UserSchema.methods.generateAuthToken = function () {
 
   return user.save().then(() => {
     return token;
+  });
+};
+//model methods
+UserSchema.statics.findByToken = function (token) {
+  const User = this;
+  let decoded;
+
+  try {
+    decoded = jwt.verify(token, 'boo');
+  }catch (e) {
+    return Promise.reject();//return any error message inside reject().
+  };
+
+  return User.findOne({
+    '_id': decoded._id,
+    'tokens.token': token,
+    'tokens.access': 'auth',
   });
 };
 
