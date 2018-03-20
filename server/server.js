@@ -149,6 +149,15 @@ app.listen(port, () => {
   console.log(`App is up at ${port}.`);
 });
 
+//log out
+app.delete('/users/me/logout', authenticate, (req, res) => {
+  req.user.removeToken(req.token).then(() => {
+    res.send();
+  }), (e) => {
+    res.status(400).send();
+  };
+});
+
 module.exports = {
   app
 };
