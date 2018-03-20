@@ -106,15 +106,14 @@ app.patch('/todos/:id', (req, res) => {
 app.post('/users', (req, res) => {
   var body = _.pick(req.body, ['email', 'password']);
 
-  const user = new User(body);
+  const user = new User(body);     ///CURRENT ISSUE: unique emails are not being enforced! Why not?
 
   user.save().then(() => {
-
     return user.generateAuthToken();
   }).then((token) => {
     res.header('x-auth', token).send(user);
   })
-  .catch((e) => res.status(418).send(e));
+  .catch((e) => res.status(400).send(e));
 });
 
 app.get('/users', (req, res) => {

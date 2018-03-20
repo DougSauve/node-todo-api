@@ -1,47 +1,64 @@
 const {SHA256} = require('crypto-js');
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
 
-// jwt.sign //creates a hash, returns the token
-// jwt.verify //takes the token and secret, and ensures it wasn't manipulated.
+const password = "123abc!";
 
-const data = {
-  id: 10
-};
+//this makes bcrypt take longer so that brute force attacks can't happen. Much fewer requests possible.
+bcrypt.genSalt(10, (err, salt) => {
+  bcrypt.hash(password, salt, (err, hash) => {
+    console.log(hash);
+  });
+});
 
-const token = jwt.sign(data, 'secret'); //this gets sent to the user as well as stored in the tokens array.
-console.log(token);
+const hashedPassword = '$2a$10$x/SefK6Gfal2dSHBZz89YOukRlAk7C0teYKQlKj8OAKcfOsrtAJBq';
 
-const decoded = jwt.verify(token, 'secret');
-console.log('decoded', decoded);
+bcrypt.compare(password, hashedPassword, (err, res) => {
+  console.log(res);
+});
 
-//this is JWT - JSON Web Tokens.
 //
-// const {SHA256} = require('crypto-js');
-//
-// const message = "I'm awesome.";
-//
-// const hash = SHA256(message).toString();
-//
-// console.log (`Message: ${message}%%%%%% Hash: ${hash}`);
+// // jwt.sign //creates a hash, returns the token
+// // jwt.verify //takes the token and secret, and ensures it wasn't manipulated.
 //
 // const data = {
-//   id: 4
+//   id: 10
 // };
 //
-// const token = {
-//   data,
-//   hash: SHA256(JSON.stringify(data)) + 'someSecret'.toString()
-// };
+// const token = jwt.sign(data, 'secret'); //this gets sent to the user as well as stored in the tokens array.
+// console.log(token);
 //
-// token.data.id = 5;
-// token.hash = SHA256(JSON.stringify(token.data)).toString();
+// const decoded = jwt.verify(token, 'secret');
+// console.log('decoded', decoded);
 //
-//
-// const resultHash = SHA256(JSON.stringify(token.data)) + 'someSecret'.toString();
-//
-// if (resultHash === token.hash) {
-//   //data was not manipulated.
-//   console.log('data not changed.');
-// }else{
-//   console.log('data was changed, do not trust it!');
-// }
+// //this is JWT - JSON Web Tokens.
+// //
+// // const {SHA256} = require('crypto-js');
+// //
+// // const message = "I'm awesome.";
+// //
+// // const hash = SHA256(message).toString();
+// //
+// // console.log (`Message: ${message}%%%%%% Hash: ${hash}`);
+// //
+// // const data = {
+// //   id: 4
+// // };
+// //
+// // const token = {
+// //   data,
+// //   hash: SHA256(JSON.stringify(data)) + 'someSecret'.toString()
+// // };
+// //
+// // token.data.id = 5;
+// // token.hash = SHA256(JSON.stringify(token.data)).toString();
+// //
+// //
+// // const resultHash = SHA256(JSON.stringify(token.data)) + 'someSecret'.toString();
+// //
+// // if (resultHash === token.hash) {
+// //   //data was not manipulated.
+// //   console.log('data not changed.');
+// // }else{
+// //   console.log('data was changed, do not trust it!');
+// // }

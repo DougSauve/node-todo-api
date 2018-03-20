@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const validator = require('validator')
 const jwt = require('jsonwebtoken');
 const _ = require('lodash');
+const bcrypt = require('bcryptjs');
 
 const UserSchema = new mongoose.Schema({
   email: {
@@ -9,7 +10,7 @@ const UserSchema = new mongoose.Schema({
     required: true,
     minlength: 1,
     trim: true,
-    unique: true,
+    unique: true, // * This decides to slack off if you don't restart the app AND drop the database!!
     validate: {
       validator: validator.isEmail,
       message: `{value} is not a valid email.`,
@@ -40,7 +41,6 @@ UserSchema.methods.toJSON = function () {
   return _.pick(userObject, ['_id', 'email']);
 };
 //instance methods
-//using 'function' because we need 'this'
 UserSchema.methods.generateAuthToken = function () {
   const user = this;
   const access = 'auth';
@@ -70,6 +70,24 @@ UserSchema.statics.findByToken = function (token) {
   });
 };
 
-const User = mongoose.model('Users', UserSchema);
+UserSchema.pre('save', function (next) {
+  const user = this;
+
+  //check if the password was modified.
+  if (user.isModified('password')) {
+    //encrypt the password
+    bcrypt.genSalt(10, (err, salt) => {
+      bcrypt.hash(user.password, salt, (err, hash) => {
+        user.password = hash;
+        next();
+      });
+    });
+  }else{
+    next();
+  }
+
+});
+
+const User = mongoose.model('User', UserSchema);
 
 module.exports.User = User;
